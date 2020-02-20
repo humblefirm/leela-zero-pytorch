@@ -10,7 +10,6 @@ from itertools import cycle
 from concurrent.futures import ProcessPoolExecutor
 
 from flambe.dataset import Dataset
-from flambe.compile import registrable_factory
 
 logger = logging.getLogger(__name__)
 
@@ -116,7 +115,6 @@ class GoDataset(Dataset):
     def test(self) -> GoDataView:
         return self._test
 
-    @registrable_factory
     @classmethod
     def from_data_dir(cls, train_dir: str, val_dir: str, test_dir: str) -> 'GoDataset':
         train_files = glob.glob(os.path.join(train_dir, '*.gz'))
