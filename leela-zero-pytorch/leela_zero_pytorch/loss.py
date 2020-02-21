@@ -21,3 +21,22 @@ class MSECrossEntropyLoss(Metric):
         cross_entropy_loss = F.cross_entropy(pred_move, target_move)
         mse_loss = F.mse_loss(pred_val, target_val)
         return self.alpha * mse_loss + cross_entropy_loss
+
+    def aggregate(self, state: dict, *args, **kwargs) -> dict:
+        score = self.compute(*args, **kwargs)
+        score_np = score.cpu().detach().numpy() \
+            if isinstance(score, torch.Tensor) \
+            else score
+        try:
+            num_samples = args[0][0].size(0)
+        except (ValueError, AttributeError):
+            raise ValueError(f'Cannot get size from {type(args[0][0])}')
+        if not state:
+            state['accumulated_score'] = 0.
+            state['sample_count'] = 0
+        state['accumulated_score'] = \
+            (state['sample_count'] * state['accumulated_score'] +
+             num_samples * score_np.item()) / \
+            (state['sample_count'] + num_samples)
+        state['sample_count'] = state['sample_count'] + num_samples
+        return state
