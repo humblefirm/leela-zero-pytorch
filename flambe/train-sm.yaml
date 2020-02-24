@@ -10,7 +10,7 @@ local_files:
 
 ---
 
-!Experiment
+!Pipeline
 
 name: leela-zero-pytorch-train-sm
 
@@ -42,3 +42,7 @@ pipeline:
     model: !copy train.model
     metric_fn: !copy train[loss_fn]
     eval_sampler: !copy train[train_sampler]
+
+gpus_per_trial:
+  train: 1
+  eval: 1
