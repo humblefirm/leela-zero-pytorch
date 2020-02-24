@@ -117,7 +117,7 @@ class GoDataset(Dataset):
 
     @classmethod
     def from_data_dir(cls, train_dir: str, val_dir: str, test_dir: str) -> 'GoDataset':
-        train_files = glob.glob(os.path.expanduser(os.path.join(train_dir, '*.gz')))
-        val_files = glob.glob(os.path.expanduser(os.path.join(val_dir, '*.gz')))
-        test_files = glob.glob(os.path.expanduser(os.path.join(test_dir, '*.gz')))
+        train_files = glob.glob(os.path.join(train_dir, '*.gz'))
+        val_files = glob.glob(os.path.join(val_dir, '*.gz'))
+        test_files = glob.glob(os.path.join(test_dir, '*.gz'))
         return cls(train_files, val_files, test_files)
