@@ -92,7 +92,11 @@ class GoLightningModule(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         pred, target = self.forward(*batch)
-        return {'loss': self._calculate_loss(pred, target)}
+        loss = self._calculate_loss(pred, target)
+        return {
+            'loss': loss,
+            'log': {'losses': {'training_loss': loss}},
+        }
 
     def validation_step(self, batch, batch_idx):
         pred, target = self.forward(*batch)
@@ -100,7 +104,7 @@ class GoLightningModule(pl.LightningModule):
 
     def validation_end(self, outputs):
         val_loss_mean = torch.stack([x['val_loss'] for x in outputs]).mean()
-        return {'val_loss': val_loss_mean}
+        return {'log': {'losses': {'validation_loss': val_loss_mean}}}
 
     def test_step(self, batch, batch_idx):
         pred, target = self.forward(*batch)
@@ -108,7 +112,7 @@ class GoLightningModule(pl.LightningModule):
 
     def test_end(self, outputs):
         test_loss_mean = torch.stack([x['test_loss'] for x in outputs]).mean()
-        return {'test_loss': test_loss_mean}
+        return {'log': {'losses': {'test_loss': test_loss_mean}}}
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters())
