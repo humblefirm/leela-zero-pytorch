@@ -1,0 +1,36 @@
+!Environment
+
+extensions:
+  leela_zero_pytorch: leela-zero-pytorch
+  pytorch_lightning: pytorch-lightning
+
+local_files:
+  train_dir: data/train-sm
+  val_dir: data/val-sm
+  test_dir: data/test-sm
+
+---
+
+!Pipeline
+
+name: leela-zero-pytorch-train-sm
+
+pipeline:
+
+  lightning: !leela_zero_pytorch.trainer.LightningTask
+    model: !leela_zero_pytorch.trainer.GoLightningModule
+      dataset: !leela_zero_pytorch.GoDataset.from_data_dir
+        train_dir: !file train_dir
+        val_dir: !file val_dir
+        test_dir: !file test_dir
+      model: !leela_zero_pytorch.Network
+        board_size: 19
+        in_channels: 18
+        residual_channels: 32
+        residual_layers: 8
+      alpha: 1
+    trainer: !pytorch_lightning.Trainer
+
+gpus_per_trial:
+  train: 1
+  eval: 1
