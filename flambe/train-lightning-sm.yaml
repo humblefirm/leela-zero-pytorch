@@ -30,6 +30,7 @@ pipeline:
         residual_layers: 8
       alpha: 1
     trainer: !pytorch_lightning.Trainer
+      gpus: 1
 
 gpus_per_trial:
   train: 1
