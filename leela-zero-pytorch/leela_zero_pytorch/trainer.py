@@ -90,11 +90,11 @@ class GoLightningModule(pl.LightningModule):
     def forward(self, planes, target_pol, target_val):
         return self.model(planes, target_pol, target_val)
 
-    def training_step(self, batch):
+    def training_step(self, batch, batch_idx):
         pred, target = self.forward(*batch)
         return {'loss': self._calculate_loss(pred, target)}
 
-    def validation_step(self, batch):
+    def validation_step(self, batch, batch_idx):
         pred, target = self.forward(*batch)
         return {'val_loss': self._calculate_loss(pred, target)}
 
@@ -102,7 +102,7 @@ class GoLightningModule(pl.LightningModule):
         val_loss_mean = torch.stack([x['val_loss'] for x in outputs]).mean()
         return {'val_loss': val_loss_mean}
 
-    def test_step(self, batch):
+    def test_step(self, batch, batch_idx):
         pred, target = self.forward(*batch)
         return {'test_loss': self._calculate_loss(pred, target)}
 
