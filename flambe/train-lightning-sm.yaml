@@ -33,5 +33,4 @@ pipeline:
       gpus: 1
 
 gpus_per_trial:
-  train: 1
-  eval: 1
+  lightning: 1
